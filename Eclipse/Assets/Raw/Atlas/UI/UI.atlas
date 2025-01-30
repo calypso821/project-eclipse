@@ -1,0 +1,11 @@
+UI.png
+size:512,256
+repeat:none
+Frames/FlatFrameGrey
+bounds:280,189,96,64
+Frames/FlatFrameBlue
+bounds:280,189,96,64
+Frames/FlatFrameOrange
+bounds:280,123,96,64
+Icons/HealthIcon
+bounds:2,2,276,251

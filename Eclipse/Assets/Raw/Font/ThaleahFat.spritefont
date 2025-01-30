@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+	<Asset Type="Graphics:FontDescription">
+		<!-- Name of the .ttf file in the same directory -->
+		<FontName>ThaleahFat</FontName>
+		<!-- Size in points - adjust based on pixel font size -->
+		<Size>30</Size>
+		<!-- Keep at 0 for pixel-perfect fonts -->
+		<Spacing>3</Spacing>
+		<!-- Disable kerning for pixel fonts -->
+		<UseKerning>false</UseKerning>
+		<!-- Font style - usually Regular for pixel fonts -->
+		<Style>Regular</Style>
+		<!-- Character ranges to include -->
+		<CharacterRegions>
+			<!-- Basic ASCII characters (space to ~) -->
+			<CharacterRegion>
+				<Start>&#32;</Start>
+				<End>&#126;</End>
+			</CharacterRegion>
+			<!-- Extended Latin characters (¡ to ÿ) -->
+			<CharacterRegion>
+				<Start>&#161;</Start>
+				<End>&#255;</End>
+			</CharacterRegion>
+		</CharacterRegions>
+	</Asset>
+</XnaContent>

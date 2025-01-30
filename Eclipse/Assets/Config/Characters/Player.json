@@ -1,0 +1,38 @@
+{
+  "health": 110,
+  "defense": 50,
+  "speed": 5.5,
+  "attack": 15,
+  //"spriteId": "Characters/Wizard/Base",
+  "spriteAnimations": [
+    {
+      "name": "Walk",
+      "spriteId": "Characters/Wizard/Walk",
+      "duration": 0.7,
+      "isLooping": true
+    },
+    {
+      "name": "Idle",
+      "spriteId": "Characters/Wizard/Idle",
+      "duration": 1.0,
+      "isLooping": true
+    },
+    {
+      "name": "Jump",
+      "spriteId": "Characters/Wizard/Jump",
+      "duration": 0.6,
+      "isLooping": true
+    }
+  ],
+  "overlayAnimations": [
+    {
+      "name": "IdleBlade",
+      "spriteId": "Characters/Wizard/IdleBlade"
+    },
+    {
+      "name": "AttackBlade",
+      "spriteId": "Characters/Wizard/Attack",
+      "duration": 0.5
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "Blade": {
+    "baseDamage": 100,
+    "attackRate": 120.0,
+    "attackDuration": 0.5,
+    "range": 100.0,
+    "weaponType": "Melee",
+    "attackAudioId": "Weapons/Blade/NormalAttack",
+    "hitbox": {
+      "colliderType": "Box",
+      "width": 1.0,
+      "height": 1.0,
+      "maxTargets": 2,
+      "offset": {
+        "x": 1.0,
+        "y": 0
+      }
+    },
+    "characterAnimations": {
+      "Ready": "IdleBlade",
+      "Attack": "AttackBlade"
+    }
+    //"attackAudioId": "Weapons/SniperFire_mono",
+  },
+  "Bow": {
+    "baseDamage": 100,
+    "attackRate": 60.0,
+    "isChargeable": true,
+    "chargeMultipler": 3.0,
+    "chargeTime": 2.0,
+    "weaponType": "Ranged",
+    "attackAudioId": "Weapons/Bow/Release",
+    "projectileId": "Arrow",
+    "spriteAnimations": [
+      {
+        "name": "Ready",
+        "spriteId": "Objects/Weapons/Fantasy/BowReady",
+        "origin": {
+          "x": 0,
+          "y": 28
+        }
+        //"duration": 0.7,
+        //"isLooping": true
+      },
+      {
+        "name": "Charge",
+        "spriteId": "Objects/Weapons/Fantasy/BowCharge",
+        "duration": 2.0,
+        "isLooping": false,
+        "origin": {
+          "x": 0,
+          "y": 28
+        }
+      },
+      {
+        "name": "Cooldown",
+        "spriteId": "Objects/Weapons/Fantasy/BowCooldown",
+        "origin": {
+          "x": 0,
+          "y": 28
+        }
+        //"duration": 0.6,
+        //"isLooping": true
+      }
+    ]
+  },
+  "Rifle/AK47": {
+    "baseDamage": 25,
+    "attackRate": 600.0,
+    "maxAmmo": 30,
+    "range": 100.0,
+    "spread": 0.1,
+    "aimSpread": 0.02,
+    "weaponType": "Projectile",
+    "fireMode": "Auto",
+    "reloadDuration": 1.0,
+    "aimSpeed": 12.0,
+    "attackAudioId": "Weapons/SniperFire_mono",
+    //"reloadAudioId": "Weapons/ReloadRPG",
+    "projectileId": "RifleBullet",
+    "spriteId": "Objects/Weapons/Rifles/AK47",
+    "transformAnimations": [
+      {
+        "name": "Reload",
+        "startRotation": 0,
+        "endRotation": 6.28318,
+        "duration": 1.0
+      }
+    ]
+  },
+  "Sniper/Awp": {
+    "baseDamage": 100,
+    "headshotMultiplier": 3.5,
+    "attackRate": 60.0,
+    "maxAmmo": 5,
+    "range": 100.0,
+    "spread": 0.1,
+    "aimSpread": 0.02,
+    "weaponType": "Projectile",
+    "fireMode": "Auto",
+    "reloadDuration": 1.5,
+    "aimSpeed": 12.0,
+    "attackAudioId": "Weapons/SniperFire_02",
+    //"reloadAudioId": "Weapons/ReloadRPG",
+    "projectileId": "SniperBullet",
+    "spriteId": "Objects/Weapons/Snipers/Awp",
+    "transformAnimations": [
+      {
+        "name": "Reload",
+        "startRotation": 0,
+        "endRotation": 6.28318,
+        "duration": 1.5
+      }
+    ]
+  },
+  "RocketLauncher/RPG": {
+    "baseDamage": 100,
+    "attackRate": 100.0,
+    "maxAmmo": 1,
+    "range": 100.0,
+    "spread": 0.1,
+    "aimSpread": 0.02,
+    "weaponType": "Projectile",
+    "fireMode": "Auto",
+    "reloadDuration": 1.5,
+    "aimSpeed": 12.0,
+    "attackAudioId": "Weapons/RPGFire",
+    "reloadAudioId": "Weapons/ReloadRPG",
+    "projectileId": "Rocket",
+    "spriteId": "Objects/Weapons/RocketLaunchers/RPG",
+    "spriteAnimations": [
+      {
+        "name": "Idle",
+        "spriteId": "Objects/Weapons/RocketLaunchers/RPG",
+        "isLooping": false
+      },
+      {
+        "name": "Reload",
+        "spriteId": "Objects/Weapons/RocketLaunchers/RPGReload",
+        "isLooping": false
+      }
+    ],
+    "transformAnimations": [
+      {
+        "name": "Reload",
+        "startRotation": 0,
+        "endRotation": 6.28318,
+        "duration": 1.5
+      }
+    ]
+  }
+}

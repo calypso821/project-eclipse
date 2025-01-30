@@ -1,0 +1,54 @@
+{
+  "Attack/Slime/Melee": {
+    "damage": 30,
+    "cooldown": 2,
+    "range": 2.0,
+    "abilityType": "Melee",
+    "hitbox": {
+      "colliderType": "Box",
+      "width": 1.0,
+      "height": 1.0,
+      "maxTargets": 2,
+      "duration": 0.4,
+      "offset": {
+        "x": 1.0,
+        "y": 0
+      }
+    },
+    "animationId": "BumpAttack",
+    "transformAnimations": [
+      {
+        "name": "BumpAttack",
+        "endPosition": {
+          "x": 1.5,
+          "y": 0
+        },
+        "pingPong": true,
+        "duration": 0.2
+      }
+    ]
+  },
+  "Attack/Slime/Projectile": {
+    "damage": 50,
+    "cooldown": 3,
+    "range": 10.0,
+    "abilityType": "projectile",
+    "projectileId": "SlimeProjectile",
+    "animationId": "LunchAttack",
+    "transformAnimations": [
+      {
+        "name": "LunchAttack",
+        "endScale": {
+          "x": 0.7,
+          "y": 0.85
+        },
+        //"endPosition": {
+        //  "x": -0.3,
+        //  "y": 0
+        //},
+        "pingPong": true,
+        "duration": 0.1
+      }
+    ]
+  }
+}
