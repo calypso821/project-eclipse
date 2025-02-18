@@ -45,25 +45,38 @@ namespace Eclipse.Engine.Factories
             if (spriteAnimations.Count > 0)
             {
                 var animator = new SpriteAnimator(sprite);
-                animator.SetAnimations(spriteAnimations);
+                animator.AddAnimations(spriteAnimations);
                 obj.AddComponent(animator);
             }
 
+            // Visaul Effects
+            var visualEffects = config.GetVisualEffects();
+            if (visualEffects.Count > 0)
+            {
+                var vfxSoruce = new VFXSource();
+                vfxSoruce.AddEffects(visualEffects);
+                obj.AddComponent(vfxSoruce);
+            }
+
             // Setup TranfromAnimations
-            var transfromAnimations = config.GetTransformAnimations();
-            var tweener = new Tweener(obj.Transform);
-            tweener.SetAnimations(transfromAnimations);
-            obj.AddComponent(tweener);
-            
+            //var transfromAnimations = config.GetTransformAnimations();
+            //var tweener = new Tweener(obj.Transform);
+            //tweener.AddAnimations(transfromAnimations);
+            //obj.AddComponent(tweener);
+
+            // Sound Effects
+            var soundEffects = config.SoundEffects;
+            if (soundEffects.Count > 0)
+            {
+                var audioSource = new SFXSource();
+                audioSource.Is3D = false;
+                audioSource.AddEffects(soundEffects);
+                obj.AddComponent(audioSource);
+            }
+
             // Element state
             var elementState = new ElementState(element, false);
             obj.AddComponent(elementState);
-
-            // Setup audio
-            var audioSource = new SoundEffectSource();
-            audioSource.Volume = 0.3f;
-            audioSource.Is3D = false;
-            obj.AddComponent(audioSource);
 
             Weapon weapon = data.WeaponType switch
             {

@@ -36,9 +36,6 @@ namespace Eclipse.Engine.Factories
             base.InitializeObjects(targetScene);
 
             // Initialize each pool with specific capacity
-            InitializePool("RifleBullet", 20);
-            InitializePool("SniperBullet", 10);
-            InitializePool("Rocket", 5);
             InitializePool("Arrow", 10);
             InitializePool("SlimeProjectile", 10);
         }
@@ -85,10 +82,24 @@ namespace Eclipse.Engine.Factories
             var elementState = new ElementState(Element.Neutral, true);
             obj.AddComponent(elementState);
 
-            // Setup audio
-            var audioSource = new SoundEffectSource();
-            audioSource.Volume = 0.3f;
-            obj.AddComponent(audioSource);
+            // Visaul Effects
+            var visualEffects = config.GetVisualEffects();
+            if (visualEffects.Count > 0)
+            {
+                var vfxSoruce = new VFXSource();
+                vfxSoruce.AddEffects(visualEffects);
+                obj.AddComponent(vfxSoruce);
+            }
+
+            // Sound Effects
+            var soundEffects = config.SoundEffects;
+            if (soundEffects.Count > 0)
+            {
+                var audioSource = new SFXSource();
+                audioSource.Is3D = false; // TODO: Shoud be true
+                audioSource.AddEffects(soundEffects);
+                obj.AddComponent(audioSource);
+            }
 
             var data = new ProjectileData(id, config);
             var projectileComp = new Projectile(data);

@@ -20,14 +20,11 @@ namespace Eclipse.Engine.Core
         Controller = 1 << 6,
         Projectile = 1 << 7,
         Ability = 1 << 8,       // Cooldowns
-        Audio = 1 << 9,       // AudioSoruce
-        VFX = 1 << 10,       // AudioSoruce
-        Destroy = 1 << 11,        // MarkForDestroy GameObject and its components
+        Destroy = 1 << 9,        // MarkForDestroy GameObject and its components
 
         // All flags except Destroy
         All = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) |
-              (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) |
-              (1 << 9) | (1 << 10)
+              (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8)
     }
 
     public class GameObject
@@ -461,5 +458,6 @@ namespace Eclipse.Engine.Core
         {
             OnCollision?.Invoke(collision);
         }
+
     }
 }

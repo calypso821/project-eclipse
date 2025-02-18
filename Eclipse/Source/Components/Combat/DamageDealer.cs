@@ -43,10 +43,10 @@ namespace Eclipse.Components.Combat
             if (other.GameObject == DamageData.Source.GameObject.Parent)
                 return;
 
-            OnHit(other.GameObject);
+            OnHit(other.GameObject, collision);
         }
 
-        internal virtual void OnHit(GameObject target)
+        internal virtual void OnHit(GameObject target, Collision2D collision)
         {
             if (target is IDamageable damageable)
             {
@@ -56,7 +56,7 @@ namespace Eclipse.Components.Combat
                 damageable.TakeDamage(DamageData);
 
                 // Invoke animation, VFX, SFX...
-                DamageData.Source.OnDamageDealt(target);
+                DamageData.Source.OnDamageDealt(target, collision);
             }
         }
     }

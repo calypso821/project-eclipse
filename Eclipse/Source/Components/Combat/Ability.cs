@@ -3,10 +3,11 @@
 using Eclipse.Engine.Core;
 using Eclipse.Engine.Data;
 using Eclipse.Components.Engine;
+using Eclipse.Engine.Physics.Collision;
 
 namespace Eclipse.Components.Combat
 {
-    internal abstract class Ability : Component
+    internal abstract class Ability : Component, IDamageSource
     {
         internal sealed override DirtyFlag DirtyFlag => DirtyFlag.Ability;
         internal sealed override bool IsUnique => false;
@@ -63,7 +64,7 @@ namespace Eclipse.Components.Combat
 
         internal abstract void Activate(Vector2 direction, float damage, Element element);
 
-        public virtual void OnDamageDealt(GameObject target)
+        public virtual void OnDamageDealt(GameObject target, Collision2D collision)
         {
             // Handle effects, animations, etc
         }

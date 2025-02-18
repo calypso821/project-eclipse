@@ -8,6 +8,7 @@ using Eclipse.Components.Controller;
 using Eclipse.Engine.Data;
 using Eclipse.Components.Animation;
 using Microsoft.Xna.Framework.Input;
+using Eclipse.Engine.Physics.Collision;
 
 namespace Eclipse.Components.Combat
 {
@@ -20,7 +21,7 @@ namespace Eclipse.Components.Combat
         Cooldown   // After attack -> between attacks
     }
 
-    internal abstract class Weapon : Component
+    internal abstract class Weapon : Component, IDamageSource
     {
         public event Action<WeaponState, string> OnWeaponStateChanged;
 
@@ -38,9 +39,8 @@ namespace Eclipse.Components.Combat
 
         private WeaponState _currentState = WeaponState.Ready;
 
-        // Audio 
-        private SoundEffectSource _audioSource;
-        // Weapon animations
+        private SFXSource _audioSource;
+        private VFXSource _vfxSource;
         private SpriteAnimator _spriteAnimator;
 
         internal Weapon(WeaponData weaponData)
@@ -56,10 +56,8 @@ namespace Eclipse.Components.Combat
         {
             base.OnInitialize(gameObject);
 
-            _audioSource = GameObject.GetComponent<SoundEffectSource>() ??
-                throw new ArgumentException("Weapon requires a AudioSource component");
-
-            // Optional compoennt
+            _audioSource = GameObject.GetComponent<SFXSource>();
+            _vfxSource = GameObject.GetComponent<VFXSource>();
             _spriteAnimator = GameObject.GetComponent<SpriteAnimator>();
         }
 
@@ -150,10 +148,9 @@ namespace Eclipse.Components.Combat
             AttackAction(direction, damage, attackElement);
 
             // Play audio
-            if (!string.IsNullOrEmpty(WeaponData.AttackAudioId))
-            {
-                _audioSource.Play(WeaponData.AttackAudioId);
-            }
+            if (_audioSource != null)
+                _audioSource.Play("Attack");
+     
 
             _attackTimer = _attackDuration; // reset attack timer 
 
@@ -236,12 +233,21 @@ namespace Eclipse.Components.Combat
             OnWeaponStateChanged?.Invoke(weaponState, characterAnimation);
         }
 
-        public void OnDamageDealt(GameObject target)
+        public void OnDamageDealt(GameObject target, Collision2D collision)
         {
             // Handle post-damage effects
             // VFX
             // SFX
             // status effects...
+
+            // Element color
+            var color = GameObject.GetComponent<ElementState>().Color;
+            if (_vfxSource != null)
+                _vfxSource.Play("OnHit", collision.Point, collision.Normal, 1.5f, color);
+
+            if (_audioSource != null)
+                _audioSource.Play("OnHit");
+
         }
     }
 }

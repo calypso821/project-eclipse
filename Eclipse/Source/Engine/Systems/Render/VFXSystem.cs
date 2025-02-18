@@ -7,51 +7,73 @@ using System.Threading.Tasks;
 using Eclipse.Engine.Core;
 using Eclipse.Engine.Managers;
 using Eclipse.Components.Engine;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Eclipse.Engine.Systems.Render
 {
-    internal class VFXSystem : ComponentSystem<VFXSource>
+    internal class VFXSystem : ISystem, IDrawableSystem
     {
-        public override void Update(GameTime gameTime)
+        private IReadOnlyDictionary<int, VFXEmitter> _activeEmitters;
+
+        private readonly SpriteBatch _spriteBatch;
+        private readonly CameraManager _cameraManager;
+
+        internal VFXSystem(SpriteBatch spriteBatch)
         {
-            foreach (var source in _components)
-            {
-                if (!source.IsEnabled || !source.GameObject.IsActive) continue;
-                if (!source.IsPlaying) continue;
+            _spriteBatch = spriteBatch;
+            _cameraManager = CameraManager.Instance;
 
-                // Cleanup finished effects
-                VFXManager.Instance.UpdateInstances(source);
-
-                // Update 3D effects if needed
-                //if (source.Is3D)
-                //{
-                //    Update3DEffect(source);
-                //}
-            }
+            _activeEmitters = VFXManager.Instance.ActiveEmitters;
         }
 
-        internal void Update3DEffect(VFXSource source)
+        public void Update(GameTime gameTime)
         {
-            var listenerPos = PlayerManager.Instance.GetPlayerPosition();
-            var sourcePos = source.GameObject.Transform.WorldPosition;
-            var distance = Vector2.Distance(listenerPos, sourcePos);
+            foreach (var kvp in _activeEmitters)
+            {
+                var emitter = kvp.Value;
+                var emitterId = kvp.Key;
 
-            if (distance < 0.5f) return; // Skip if too close
+                emitter.Update(gameTime); // Update animation, position
 
-            var scale = source.Scale;
-            // Scale down with distance
-            //if (distance > source.MinDistance)
-            //{
-            //    scale *= 1.0f - Math.Min((distance - source.MinDistance) /
-            //        (source.MaxDistance - source.MinDistance), 1.0f);
-            //}
-
-            VFXManager.Instance.UpdateSource(source, scale);
+                if (!emitter.IsPlaying)
+                {
+                    VFXManager.Instance.ReleaseEmitter(emitterId);
+                    continue;
+                }
+            }
         }
 
         public void Draw()
         {
-            VFXManager.Instance.DrawInstances();
+            _spriteBatch.Begin(transformMatrix: _cameraManager.ScreenViewMatrix);
+            //Console.WriteLine("Active emitters: " + _activeEmitters.Count);
+            foreach (var emitter in _activeEmitters.Values)
+            {
+                if (!emitter.IsPlaying) continue;
+
+                var renderObject = emitter.Sprite;
+                var VFXData = emitter.VFXData;
+
+                var texture = renderObject.Texture;
+                if (texture == null) continue;
+
+                var position = PPU.ToPixels(emitter.CurrentPosition);
+                var rotation = renderObject.IsRotated ? MathHelper.Pi / 2 : 0.0f;
+
+                _spriteBatch.Draw(
+                    texture,
+                    position,
+                    renderObject.SourceRectangle,
+                    VFXData.Color,
+                    rotation,
+                    renderObject.Origin,
+                    VFXData.Scale,
+                    emitter.SpriteEffects, // FlipX if needed (non static)
+                    0f
+                );
+            }
+
+            _spriteBatch.End();
         }
     }
 }

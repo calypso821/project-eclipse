@@ -10,7 +10,5 @@ namespace Eclipse.Engine.Config
         public float GravityScale { get; set; } = 1.0f;
         public float Mass { get; set; } = 1.0f;
         public bool DestroyOnImpact { get; set; } = true;
-        public string FireAudioId { get; set; }
-        public string ImpactAudioId { get; set; }
     }
 }

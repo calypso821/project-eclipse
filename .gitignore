@@ -28,7 +28,7 @@ mono_crash.*
 # Build results
 [Dd]ebug/
 # Keep Engine/Debug/
-!TwoDDTwo/Source/Engine/Debug/
+!Eclipse/Source/Engine/Debug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/

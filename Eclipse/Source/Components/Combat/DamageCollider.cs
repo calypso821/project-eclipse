@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Eclipse.Engine.Core;
 using Eclipse.Engine.Data;
 using Eclipse.Components.Engine;
+using Eclipse.Engine.Physics.Collision;
 
 namespace Eclipse.Components.Combat
 {
@@ -85,7 +86,7 @@ namespace Eclipse.Components.Combat
             }
         }
 
-        internal override void OnHit(GameObject target)
+        internal override void OnHit(GameObject target, Collision2D collision)
         {
             // Already hit this target
             if (_hitTargets.Contains(target))
@@ -93,7 +94,7 @@ namespace Eclipse.Components.Combat
 
             // Apply Damage if Damagable
             // target.TakeDamage(), source.OnDamageDealt() 
-            base.OnHit(target);
+            base.OnHit(target, collision);
 
             // If target was damageable (hit was successful)
             if (target is IDamageable)

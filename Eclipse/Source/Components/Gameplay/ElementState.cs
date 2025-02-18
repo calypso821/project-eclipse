@@ -23,6 +23,7 @@ namespace Eclipse.Components.Engine
         private bool _isStatic;
 
         internal Element State => _state;
+        internal Color Color => GetColor(_state);
 
         internal ElementState(Element element = Element.Neutral, bool isStatic = true)
         {
@@ -72,7 +73,16 @@ namespace Eclipse.Components.Engine
 
         internal void SetColor(Element element)
         {
-            var color = element switch
+            var color = GetColor(element);
+            foreach (var sprite in _sprites)
+            {
+                sprite.Color = color;
+            }
+        }
+
+        internal Color GetColor(Element element)
+        {
+            return element switch
             {
                 Element.Light => Color.White,
                 Element.Dark => Color.Black,
@@ -81,11 +91,6 @@ namespace Eclipse.Components.Engine
                 //Element.Neutral => new Color(3, 59, 39, 255),
                 _ => throw new ArgumentException($"Unsupported element: {element}")
             };
-
-            foreach (var sprite in _sprites)
-            {
-                sprite.Color = color;
-            }
         }
 
         internal void SetCollisionMask(Element element)

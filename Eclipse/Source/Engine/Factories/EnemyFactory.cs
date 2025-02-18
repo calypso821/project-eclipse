@@ -100,7 +100,7 @@ namespace Eclipse.Engine.Factories
             // Setup TranfromAnimations
             var transfromAnimations = config.GetTransformAnimations();
             var tweener = new Tweener(obj.Transform);
-            tweener.SetAnimations(transfromAnimations);
+            tweener.AddAnimations(transfromAnimations);
             obj.AddComponent(tweener);
 
             var rigidBody = new RigidBody2D();

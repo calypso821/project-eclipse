@@ -5,6 +5,7 @@ using Eclipse.Engine.Core;
 using Eclipse.Engine.Data;
 using Eclipse.Engine.Factories;
 using Eclipse.Components.Engine;
+using Eclipse.Engine.Physics.Collision;
 
 namespace Eclipse.Components.Combat
 {
@@ -15,7 +16,8 @@ namespace Eclipse.Components.Combat
         private RigidBody2D _rigidBody;
         //private float _lifetime;
 
-        private SoundEffectSource _audioSource;
+        private SFXSource _audioSource;
+        private VFXSource _vfxSource;
 
         private Vector2 _spawnPosition;
 
@@ -38,7 +40,8 @@ namespace Eclipse.Components.Combat
             _rigidBody.IsKinematic = true;
 
             // Optional component
-            _audioSource = GameObject.GetComponent<SoundEffectSource>();
+            _audioSource = GameObject.GetComponent<SFXSource>();
+            _vfxSource = GameObject.GetComponent<VFXSource>();
         }
 
         internal override void Configure(DamageData damageData)
@@ -90,18 +93,21 @@ namespace Eclipse.Components.Combat
         // Creae LifeTimeSysstem (register, unregister
         // LifeTime component!!!
 
-        internal override void OnHit(GameObject target)
+        internal override void OnHit(GameObject target, Collision2D collision)
         {
             // Apply Damage if Damagable
             // target.TakeDamage(), source.OnDamageDealt() 
-            base.OnHit(target);
+            base.OnHit(target, collision);
 
-            // Audio
-            var impactSound = ProjectileData.ImpactAudioId;
-            if (_audioSource != null && !string.IsNullOrEmpty(impactSound))
-            {
-                _audioSource.Play(impactSound);
-            }
+            // Element color
+            var color = GameObject.GetComponent<ElementState>().Color;
+            // visuasl effect
+            if (_vfxSource != null)
+                _vfxSource.Play("OnHit", collision.Point, collision.Normal, 0.5f, color);
+            // audio
+            if (_audioSource != null)
+                _audioSource.Play("OnHit");
+       
 
             // Cleanup
             if (ProjectileData.DestroyOnImpact)

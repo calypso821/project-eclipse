@@ -1,0 +1,15 @@
+Effects.png
+size:1024,256
+repeat:none
+Character/Combat/SlashEffect/frame
+index:1
+bounds:2,2,239,268
+rotate:true
+Character/Combat/SlashEffect/frame
+index:0
+bounds:272,2,239,268
+rotate:true
+Character/Combat/SlashEffect/frame
+index:2
+bounds:542,2,239,268
+rotate:true

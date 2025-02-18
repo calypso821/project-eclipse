@@ -139,8 +139,6 @@ namespace Eclipse.Engine.Systems.Render
                     renderObject.SpriteEffects,
                     0                     
                 );
-
-
             }
 
             _spriteBatch.End();

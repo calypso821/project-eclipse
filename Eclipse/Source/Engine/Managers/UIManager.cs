@@ -80,7 +80,7 @@ namespace Eclipse.Engine.Managers
 
             var fontAsset = AssetManager.Instance.GetFont("ThaleahFat");
             var titleText = new UIText(fontAsset);
-            titleText.Text = "2DD2";
+            titleText.Text = "Eclipse";
             titleText.Size = 2.0f;
             titleObject.AddComponent(titleText);
             canvas.AddObject(titleObject);

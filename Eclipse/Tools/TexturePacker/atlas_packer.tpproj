@@ -1,6 +1,6 @@
 name=Wizard
 filename=
-output=D:\GameDev\Assets\2DD2\Atlas\Characters\Wizard
+output=D:\GameDev\Assets\Eclipse\Atlas\Characters\Wizard
 
 alias=true
 alphaThreshold=0
@@ -34,7 +34,49 @@ prettyPrint=false
 legacyOutput=false
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:D:\\GameDev\\Assets\\2DD2\\AtlasSource\\Build\\Characters\\Wizard,type:Input,dirFilePrefix:"",recursive:true,flattenPaths:false}]
+inputFiles=[{path:D:\\GameDev\\Assets\\Eclipse\\AtlasSource\\Build\\Characters\\Wizard,type:Input,dirFilePrefix:"",recursive:true,flattenPaths:false}]
+keepInputFileExtensions=false
+
+
+---
+
+name=Effects
+filename=
+output=D:\GameDev\Assets\Eclipse\Atlas\VFX
+
+alias=true
+alphaThreshold=0
+debug=false
+duplicatePadding=false
+edgePadding=true
+fast=false
+filterMag=Nearest
+filterMin=Nearest
+ignoreBlankImages=true
+maxHeight=1024
+maxWidth=1024
+minHeight=16
+minWidth=16
+paddingX=2
+paddingY=2
+pot=true
+mof=false
+rotation=true
+stripWhitespaceX=false
+stripWhitespaceY=false
+wrapX=ClampToEdge
+wrapY=ClampToEdge
+premultiplyAlpha=false
+grid=false
+square=false
+bleed=true
+limitMemory=true
+useIndexes=true
+prettyPrint=false
+legacyOutput=false
+
+scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
+inputFiles=[{path:D:\\GameDev\\Assets\\Eclipse\\AtlasSource\\Build\\VFX,type:Input,dirFilePrefix:"",recursive:true,flattenPaths:false}]
 keepInputFileExtensions=false
 
 
@@ -42,7 +84,7 @@ keepInputFileExtensions=false
 
 name=Forest
 filename=
-output=D:\GameDev\Assets\2DD2\Atlas\Environment\Forest
+output=D:\GameDev\Assets\Eclipse\Atlas\Environment\Forest
 
 alias=true
 alphaThreshold=0
@@ -76,7 +118,7 @@ prettyPrint=false
 legacyOutput=false
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:D:\\GameDev\\Assets\\2DD2\\AtlasSource\\Build\\Environment\\Forest,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
+inputFiles=[{path:D:\\GameDev\\Assets\\Eclipse\\AtlasSource\\Build\\Environment\\Forest,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
 keepInputFileExtensions=false
 
 
@@ -84,7 +126,7 @@ keepInputFileExtensions=false
 
 name=Slimes
 filename=
-output=D:\GameDev\Assets\2DD2\Atlas\Characters\Slimes
+output=D:\GameDev\Assets\Eclipse\Atlas\Characters\Slimes
 
 alias=true
 alphaThreshold=0
@@ -118,7 +160,7 @@ prettyPrint=false
 legacyOutput=false
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:D:\\GameDev\\Assets\\2DD2\\AtlasSource\\Build\\Characters\\Slimes,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
+inputFiles=[{path:D:\\GameDev\\Assets\\Eclipse\\AtlasSource\\Build\\Characters\\Slimes,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
 keepInputFileExtensions=false
 
 
@@ -126,7 +168,7 @@ keepInputFileExtensions=false
 
 name=Weapons
 filename=
-output=D:\GameDev\Assets\2DD2\Atlas\Objects\Weapons
+output=D:\GameDev\Assets\Eclipse\Atlas\Objects\Weapons
 
 alias=true
 alphaThreshold=0
@@ -160,7 +202,7 @@ prettyPrint=false
 legacyOutput=false
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:D:\\GameDev\\Assets\\2DD2\\AtlasSource\\Build\\Objects\\Weapons,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
+inputFiles=[{path:D:\\GameDev\\Assets\\Eclipse\\AtlasSource\\Build\\Objects\\Weapons,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
 keepInputFileExtensions=false
 
 
@@ -168,7 +210,7 @@ keepInputFileExtensions=false
 
 name=UI
 filename=
-output=D:\GameDev\Assets\2DD2\Atlas\UI
+output=D:\GameDev\Assets\Eclipse\Atlas\UI
 
 alias=true
 alphaThreshold=0
@@ -202,7 +244,7 @@ prettyPrint=false
 legacyOutput=false
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:D:\\GameDev\\Assets\\2DD2\\AtlasSource\\Build\\UI,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
+inputFiles=[{path:D:\\GameDev\\Assets\\Eclipse\\AtlasSource\\Build\\UI,type:Input,dirFilePrefix:null,recursive:true,flattenPaths:false}]
 keepInputFileExtensions=false
 
 

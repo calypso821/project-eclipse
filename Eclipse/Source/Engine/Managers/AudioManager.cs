@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 
 using Eclipse.Components.Engine;
-using Eclipse.Engine.Cameras;
 using Eclipse.Engine.Core;
 using Eclipse.Engine.Systems.Audio;
 
@@ -16,6 +15,7 @@ namespace Eclipse.Engine.Managers
     {
         private readonly Dictionary<int, AudioEmitter> _activeEmitters = new();
         private readonly Queue<AudioEmitter> _emitterPool = new();
+        internal IReadOnlyDictionary<int, AudioEmitter> ActiveEmitters => _activeEmitters;
 
         // Music-specific fields
         private Song _currentSong;
@@ -27,13 +27,8 @@ namespace Eclipse.Engine.Managers
         internal Vector2 ListenerPosition => PlayerManager.Instance.GetPlayerPosition();
         private const int POOL_SIZE = 32;
 
-        // System for initial calcualtions
-        private AudioSystem _audioSystem;
-
-        internal void Initialize(AudioSystem audioSystem)
+        internal void Initialize()
         {
-            _audioSystem = audioSystem;
-
             // Audio playback objects
             for (int i = 0; i < POOL_SIZE; i++)
             {
@@ -41,7 +36,7 @@ namespace Eclipse.Engine.Managers
             }
         }
 
-        internal void PlayMusic(string songId, float volume = 1f, bool loop = true)
+        internal void PlayMusic(string songId, float volume, bool loop)
         {
             var song = AssetManager.Instance.GetSong(songId);
             if (song == null) return;
@@ -60,100 +55,80 @@ namespace Eclipse.Engine.Managers
             _currentSong = null;
         }
 
-        internal void PlaySound(SoundEffectSource source, string soundId)
+        internal void PlaySound(
+            SFXSource source,
+            string soundId,
+            AudioData audioData)
         {
             if (source == null || string.IsNullOrEmpty(soundId)) return;
+
+            // Get audio
+            var sound = AssetManager.Instance.GetSoundEffect(audioData.AudioId);
+
+            if (sound == null)
+            {
+                Console.WriteLine($"Audio clip not found: {soundId}");
+                return;
+            }
 
             // Get emitter from pool (audio playback object)
             if (!_emitterPool.TryDequeue(out var emitter))
             {
-                //Debug.LogWarning("Audio emitter pool exhausted");
-                return;
-            }
-
-            // Get audio
-            var sound = AssetManager.Instance.GetSoundEffect(soundId);
-
-            if (sound == null)
-            {
-                _emitterPool.Enqueue(emitter);
-                //Debug.LogWarning($"Audio clip not found: {source.SoundId}");
+                Console.WriteLine("Audio emitter pool exhausted");
                 return;
             }
 
             // Setup emitter parameters
             var instanceId = IDManager.GetId();
-            source.ActiveInstances.Add(instanceId);
 
             // Track active emitter
             _activeEmitters[instanceId] = emitter;
 
-            emitter.Volume = MathHelper.Clamp(source.Volume * _masterVolume, 0f, 1f);
-            emitter.Pitch = MathHelper.Clamp(source.Pitch, 0.1f, 3f);
-            emitter.Pan = MathHelper.Clamp(source.Pan, -1f, 1f);
-            emitter.Loop = source.Loop;
 
-            if (source.Is3D)
+            var pitch = audioData.RandomPitch ?
+                        audioData.Pitch + (float)(new Random().NextDouble() * 0.2 - 0.1) :
+                        audioData.Pitch;
+
+            var sfxData = new SFXData
             {
-                _audioSystem.UpdateSpatialAudio(source);
-            }
+                Volume = MathHelper.Clamp(audioData.Volume * _masterVolume, 0f, 1f),
+                Pitch = MathHelper.Clamp(pitch, -1f, 1f),
+                Pan = audioData.Pan,
+                Loop = audioData.Loop
+            };
+            
+            // Set emitter config
+            emitter.Configure(soundId, source, sfxData);
 
             // Start actual playback
             emitter.Play(sound);
         }
 
-        internal void StopSound(AudioSource source)
+        internal void StopSound(SFXSource source, string soundId = null)
         {
-            // Stop all instances for this source
-            foreach (var instanceId in source.ActiveInstances)
+            // Find all emitters for this source
+            var emittersToStop = _activeEmitters
+                .Where(kvp => kvp.Value.AudioSource == source &&
+                        (soundId == null || kvp.Value.SoundId == soundId))
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            // Release emitters to stop 
+            foreach (var emitterId in emittersToStop)
             {
-                ReleaseEmitter(instanceId);
+                ReleaseEmitter(emitterId);
             }
-            source.ActiveInstances.Clear();
         }
 
-        internal void UpdateSource(AudioSource source, float volume, float pan)
+        internal bool ReleaseEmitter(int emitterId)
         {
-            // Update all instances of this source
-            foreach (var instanceId in source.ActiveInstances)
+            if (_activeEmitters.TryGetValue(emitterId, out var emitter))
             {
-                if (_activeEmitters.TryGetValue(instanceId, out var emitter))
-                {
-                    emitter.Volume = MathHelper.Clamp(volume * _masterVolume, 0f, 1f);
-                    emitter.Pan = MathHelper.Clamp(pan, -1f, 1f);
-                    emitter.UpdateParameters();
-                }
-            }
-        }
-        internal void UpdateInstances(AudioSource source)
-        {
-            //Console.WriteLine("Active instances: " + source.ActiveInstances.Count);
-            //Console.WriteLine("Active emitters: " + _activeEmitters.Count);
-
-            foreach (var instanceId in source.ActiveInstances.ToList())
-            {
-                // Check if emmiter is still active 
-                // Remove + cleanup if not active
-                if (ReleaseEmitter(instanceId, forceStop: false))
-                {
-                    // Emitter released, remove active instance
-                    source.ActiveInstances.Remove(instanceId);
-                }
-            }
-        }
-        private bool ReleaseEmitter(int instanceId, bool forceStop = true)
-        {
-            if (_activeEmitters.TryGetValue(instanceId, out var emitter))
-            {
-                // Check if emmiter is still active 
-                if (forceStop || !emitter.IsPlaying)
-                {
-                    emitter.Stop();
-                    _emitterPool.Enqueue(emitter);
-                    _activeEmitters.Remove(instanceId);
-                    IDManager.ReleaseId(instanceId);
-                    return true;
-                }
+                emitter.Stop();
+                _activeEmitters.Remove(emitterId);
+                _emitterPool.Enqueue(emitter);
+                IDManager.ReleaseId(emitterId);
+                return true;
             }
             return false;
         }
@@ -181,7 +156,7 @@ namespace Eclipse.Engine.Managers
         {
             foreach (var kvp in _activeEmitters)
             {
-                ReleaseEmitter(kvp.Key, true);
+                ReleaseEmitter(kvp.Key);
             }
 
             _activeEmitters.Clear();

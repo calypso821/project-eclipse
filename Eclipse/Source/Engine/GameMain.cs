@@ -91,9 +91,12 @@ namespace Eclipse.Engine
             InputManager.Instance.Initialize(inputSystem);
 
             // Audio
-            var audioSystem = new AudioSystem();
             AudioManager.CreateInstance();
-            AudioManager.Instance.Initialize(audioSystem);
+            AudioManager.Instance.Initialize();
+
+            // VFX
+            VFXManager.CreateInstance();
+            VFXManager.Instance.Initialize();
 
             // Camera
             var camera = new Camera(new Vector2(
@@ -121,8 +124,9 @@ namespace Eclipse.Engine
             SystemManager.CreateInstance();
             _systemManager = SystemManager.Instance;
 
-            var renderer = new SpriteRenderer(_spriteBatch);
+            var spriteRenderer = new SpriteRenderer(_spriteBatch);
             var canvasRenderer = new CanvasRenderer(_spriteBatch);
+            var vfxSystem = new VFXSystem(_spriteBatch);
             var physicsSystem = new PhysicsSystem();
             var transformSystem = new TransformSystem();
             var controllerSystem = new ControllerSystem();
@@ -130,6 +134,7 @@ namespace Eclipse.Engine
             var projectileSystem = new ProjectileSystem();
             var abilitySystem = new AbilitySystem();
             var destroySystem = new DestroySystem();
+            var audioSystem = new AudioSystem();
             var uiSystem = new UISystem();
 
             // If debug
@@ -151,18 +156,20 @@ namespace Eclipse.Engine
 
             // Post Update 
             _systemManager.RegisterSystem(animationSystem, SystemGroup.PostUpdate, 0);
-            _systemManager.RegisterSystem(cameraSystem, SystemGroup.PostUpdate, 1);
-            _systemManager.RegisterSystem(renderer, SystemGroup.PostUpdate, 2);
-            _systemManager.RegisterSystem(canvasRenderer, SystemGroup.PostUpdate, 3);
-            _systemManager.RegisterSystem(destroySystem, SystemGroup.PostUpdate, 4);
+            _systemManager.RegisterSystem(vfxSystem, SystemGroup.PostUpdate, 1);
+            _systemManager.RegisterSystem(cameraSystem, SystemGroup.PostUpdate, 2);
+            _systemManager.RegisterSystem(spriteRenderer, SystemGroup.PostUpdate, 3);
+            _systemManager.RegisterSystem(canvasRenderer, SystemGroup.PostUpdate, 4);
+            _systemManager.RegisterSystem(destroySystem, SystemGroup.PostUpdate, 5);
 
             // Drawable systems
-            _systemManager.RegisterDrawableSystem(renderer, 0);
-            _systemManager.RegisterDrawableSystem(canvasRenderer, 1);
+            _systemManager.RegisterDrawableSystem(spriteRenderer, 0);
+            _systemManager.RegisterDrawableSystem(vfxSystem, 1);
+            _systemManager.RegisterDrawableSystem(canvasRenderer, 2);
 
             // Debug drawable
-            //_systemManager.RegisterDrawableSystem(debugRenderer, 2);
-            //_systemManager.RegisterDrawableSystem(debugCanvas, 3);
+            //_systemManager.RegisterDrawableSystem(debugRenderer, 3);
+            //_systemManager.RegisterDrawableSystem(debugCanvas, 4);
 
             UIManager.CreateInstance();
             UIManager.Instance.Initialize(canvasRenderer, uiSystem);
@@ -191,8 +198,9 @@ namespace Eclipse.Engine
 
             //_sceneManager.LoadScene("Forest");
             _uiManager.LoadCanvas("MainMenu");
+            ///GameManager.Instance.StartGame();
 
-            AudioManager.Instance.PlayMusic("Soundtrack2");
+            AudioManager.Instance.PlayMusic("Soundtrack2", 1.0f, true);
         }
 
         protected override void Update(GameTime gameTime)

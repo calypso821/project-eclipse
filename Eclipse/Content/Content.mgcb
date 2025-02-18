@@ -88,6 +88,21 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Raw/Atlas/UI/UI.png;Atlas/UI/UI.png
 
+#begin ../Assets/Raw/Atlas/VFX/Effects.atlas
+/copy:../Assets/Raw/Atlas/VFX/Effects.atlas;Atlas/VFX/Effects.atlas
+
+#begin ../Assets/Raw/Atlas/VFX/Effects.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../Assets/Raw/Atlas/VFX/Effects.png;Atlas/VFX/Effects.png
+
 #begin ../Assets/Raw/Audio/Music/Soundtrack2.mp3
 /importer:Mp3Importer
 /processor:SongProcessor

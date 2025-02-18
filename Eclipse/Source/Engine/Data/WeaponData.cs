@@ -30,10 +30,6 @@ namespace Eclipse.Engine.Data
         //public float HeadshotMultiplier { get; set; }
         public string ProjectileId { get; set; }
 
-        // Audio
-        public string AttackAudioId { get; set; } // On attack/release
-        public string ChargeAudioId { get; set; }
-
         public WeaponData(string id, WeaponConfig config)
         {
             Id = id;
@@ -47,8 +43,6 @@ namespace Eclipse.Engine.Data
             CharacterAnimations = config.CharacterAnimations;
 
             ProjectileId = config.ProjectileId;
-            AttackAudioId = config.AttackAudioId;
-            ChargeAudioId = config.ChargeAudioId;
 
             HitboxData = CreateHitboxData(config.Hitbox);
         }

@@ -5,6 +5,7 @@ using System.IO;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework;
 
 using Eclipse.Components.Engine;
 using Eclipse.Engine.Utils.Load.Assets;
@@ -42,7 +43,7 @@ namespace Eclipse.Engine.Utils.Load
                 SoundEffect soundEffect = _content.Load<SoundEffect>(relativePath);
                 //Console.WriteLine($"Channels: {soundEffect.Format.Channels}");
                 // Load font through content manager
-                audio.Add(audioName, soundEffect);
+                audio.Add("SFX/" + audioName, soundEffect);
             }
 
             return audio;
@@ -175,8 +176,13 @@ namespace Eclipse.Engine.Utils.Load
 
                 string name = Path.GetFileNameWithoutExtension(relativePath);
                 // Custom origin???
-                string assetName = relativePath.Replace(".xnb", "").Replace('\\', '/'); ;
-                spriteAssets[assetName] = new SpriteAsset(_content.Load<Texture2D>(GetRelativePath(file)), true);
+                string assetName = relativePath.Replace(".xnb", "").Replace('\\', '/');
+                var texture = _content.Load<Texture2D>(GetRelativePath(file));
+                spriteAssets[assetName] = new SpriteAsset(
+                    texture: texture,
+                    origin: new Vector2(texture.Width / 2, texture.Height / 2), // middle
+                    createDefaultFrame: true
+                );
             }
 
             ValidateSprites(spriteAssets);

@@ -85,7 +85,7 @@ namespace Eclipse.Components.Animation
         {
             return _animations.ContainsKey(animationId);
         }
-        internal void SetAnimations(Dictionary<string, TweenData> animations)
+        internal void AddAnimations(Dictionary<string, TweenData> animations)
         {
             _animations = animations;
         }

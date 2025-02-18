@@ -175,11 +175,11 @@ namespace Eclipse.Engine.Utils.Load
             // Check if entry for current name exist (if not create new one)
             if (!_spriteAssets.TryGetValue(fullSpriteName, out var spriteAsset))
             {
-                _spriteAssets[fullSpriteName] = new SpriteAsset(texture);
+                _spriteAssets[fullSpriteName] = new SpriteAsset(texture, origin, false);
             }
 
             // Add Source rectangle (frame) into list
-            _spriteAssets[fullSpriteName].AddFrame(index, bounds, origin, isRotated);
+            _spriteAssets[fullSpriteName].AddFrame(index, bounds, isRotated);
         }
 
         private static (string spriteName, Vector2? origin) ParseSpriteName(string filename)

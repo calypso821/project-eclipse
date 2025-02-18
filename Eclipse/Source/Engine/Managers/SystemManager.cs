@@ -102,8 +102,6 @@ namespace Eclipse.Engine.Managers
                 AnimationSystem => DirtyFlag.Animator,
                 ProjectileSystem => DirtyFlag.Projectile,
                 AbilitySystem => DirtyFlag.Ability,
-                AudioSystem => DirtyFlag.Audio,
-                VFXSystem => DirtyFlag.VFX,
                 DestroySystem => DirtyFlag.Destroy,
                 _ => DirtyFlag.None
                 //_ => throw new ArgumentException($"Unknown system type: {system.GetType()}")

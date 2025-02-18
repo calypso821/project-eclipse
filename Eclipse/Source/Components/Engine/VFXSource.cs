@@ -2,33 +2,75 @@
 
 using Microsoft.Xna.Framework;
 using Eclipse.Engine.Core;
+using Eclipse.Components.Animation;
+using Eclipse.Engine.Managers;
+using System;
 
 namespace Eclipse.Components.Engine
 {
-    internal abstract class VFXSource : Component
+    internal class VFXSource : Component
     {
-        internal sealed override DirtyFlag DirtyFlag => DirtyFlag.VFX;
+        // Dictionary of predefined effects this source can play
+        private Dictionary<string, AnimationData> _effects = new();
 
-        // VFX parameters
-        internal bool Loop { get; set; } = false;
-        internal bool IsStatic { get; set; } = false; // Non static - attached to object 
-        internal float Scale { get; set; } = 1f;
-        internal Color Color { get; set; } = Color.White;
+        // Settings
+        internal bool AllowOverlap { get; set; } = true;
 
-        // For manager to track actual playing instances
-        internal List<int> ActiveInstances { get; set; } = new();
-        internal bool IsPlaying => ActiveInstances.Count > 0;
+        // True = static position (at Play)
+        // False = follows source object position
+        internal bool IsStatic { get; set; } = true;  
 
         internal override void OnReset()
         {
             Stop();
         }
 
-        internal abstract void Stop();
-
-        internal override void OnDestroy()
+        internal void AddEffect(string effectId, AnimationData animation)
         {
-            base.OnDestroy();
+            _effects[effectId] = animation;
+        }
+        internal void AddEffects(Dictionary<string, AnimationData> animations)
+        {
+            _effects = animations;
+        }
+
+        internal void Play(
+            string effectId,
+            Vector2 spawnPosition,
+            Vector2 normal,
+            float scale = 1.0f,
+            Color? color = null)
+        {
+            if (!_effects.TryGetValue(effectId, out var effect))
+            {
+                //Console.WriteLine($"VisualEffect {effectId} not found.");
+                return;
+            }
+
+            if (!AllowOverlap)
+            {
+                Stop();
+            }
+
+            var vfxData = new VFXData
+            {
+                Scale = scale,
+                Color = color ?? Color.White,
+                SpawnPosition = spawnPosition,
+                Direction = normal
+            };
+
+            VFXManager.Instance.PlayEffect(
+                this,
+                effectId,
+                effect,
+                vfxData
+            );
+        }
+
+        internal void Stop(string effectId = null)
+        {
+            VFXManager.Instance.StopEffect(this, effectId);
         }
     }
 }

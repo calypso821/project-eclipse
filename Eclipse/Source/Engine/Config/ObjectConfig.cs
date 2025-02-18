@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Threading;
 using Eclipse.Components.Animation;
 using Eclipse.Engine.Managers;
+using Eclipse.Components.Combat;
+using Eclipse.Engine.Core;
+using Eclipse.Components.Engine;
 
 namespace Eclipse.Engine.Config
 {
@@ -14,8 +17,10 @@ namespace Eclipse.Engine.Config
     {
         // TODO: Maybe placeholder??
         public string SpriteId { get; set; }
-        public SpriteAnimationConfig[] SpriteAnimations { get; set; }
-        public SpriteAnimationConfig[] OverlayAnimations { get; set; }
+        public AnimationConfig[] SpriteAnimations { get; set; }
+        public AnimationConfig[] OverlayAnimations { get; set; }
+        public AnimationConfig[] VisualEffects { get; set; }
+        public Dictionary<string, AudioData> SoundEffects { get; set; } = new();
         public TweenConfig[] TransformAnimations { get; set; }
         public virtual Vector2Config Offset { get; set; } = new Vector2Config(0f, 0f);
         public float Rotation { get; set; } = 0f;
@@ -29,8 +34,12 @@ namespace Eclipse.Engine.Config
         {
             return GetSpriteAnimations(OverlayAnimations);
         }
+        internal Dictionary<string, AnimationData> GetVisualEffects()
+        {
+            return GetSpriteAnimations(VisualEffects);
+        }
 
-        private Dictionary<string, AnimationData> GetSpriteAnimations(SpriteAnimationConfig[] spriteAnimations)
+        private Dictionary<string, AnimationData> GetSpriteAnimations(AnimationConfig[] spriteAnimations)
         {
             if (spriteAnimations == null || spriteAnimations.Length == 0) return new();
 
@@ -38,15 +47,10 @@ namespace Eclipse.Engine.Config
             foreach (var config in spriteAnimations)
             {
                 ValidateSpriteAnimation(config);
-                var spriteAsset = AssetManager.Instance.GetSprite(config.SpriteId);
-                if (config.Origin != null)
-                {
-                    // Set custom origins
-                    spriteAsset.SetCustomOrigin(config.Origin.ToVector2());
-                }
 
                 animations[config.Name] = new AnimationData(
-                    spriteAsset: spriteAsset,
+                    spriteId: config.SpriteId,
+                    customOrigin: config.Origin != null ? config.Origin.ToVector2() : null,
                     duration: config.Duration,
                     isLooping: config.IsLooping
                 );
@@ -67,7 +71,7 @@ namespace Eclipse.Engine.Config
             return animations;
         }
 
-        private void ValidateSpriteAnimation(SpriteAnimationConfig config)
+        private void ValidateSpriteAnimation(AnimationConfig config)
         {
             if (string.IsNullOrEmpty(config.Name))
                 throw new ArgumentException($"Animation name cannot be empty");

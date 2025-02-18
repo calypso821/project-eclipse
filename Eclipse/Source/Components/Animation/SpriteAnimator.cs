@@ -7,31 +7,32 @@ using Eclipse.Components.Engine;
 using Microsoft.Xna.Framework.Graphics;
 using Eclipse.Engine.Core;
 using Eclipse.Engine.Utils.Load.Assets;
+using Eclipse.Engine.Managers;
 
 namespace Eclipse.Components.Animation
 {
     public class AnimationData  // Class, not struct
     {
+        internal string SpriteId { get; }
         internal float Duration { get; }
         internal float FrameDuration { get; }
         internal int FrameCount { get; }
         internal bool IsLooping { get; }
-        internal Texture2D Texture { get; }
-        internal IReadOnlyList<Frame> Frames { get; }
+        internal Vector2? CustomOrigin { get; }
 
         internal AnimationData(
-            SpriteAsset spriteAsset,
+            string spriteId,
+            Vector2? customOrigin,
             float duration = 1.0f,
             bool isLooping = true)
         {
-            //Frames = frames.ToList().AsReadOnly();
-            var frames = spriteAsset.Frames;
-            Texture = spriteAsset.Texture;
-            Frames = frames;
+            SpriteId = spriteId;
+            var frames = AssetManager.Instance.GetSprite(spriteId).Frames;
             Duration = duration;
             FrameDuration = duration / frames.Count;
             FrameCount = frames.Count;
             IsLooping = isLooping;
+            CustomOrigin = customOrigin;
         }
     }
 
@@ -77,7 +78,7 @@ namespace Eclipse.Components.Animation
         {
             _animations[animationId] = animation;
         }
-        internal void SetAnimations(Dictionary<string, AnimationData> animations)
+        internal void AddAnimations(Dictionary<string, AnimationData> animations)
         {
             _animations = animations;
         }

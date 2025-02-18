@@ -14,10 +14,7 @@ namespace Eclipse.Engine.Config
         public float ChargeTime { get; set; } = 2.0f;
         public string WeaponType { get; set; }
         public Dictionary<WeaponState, string> CharacterAnimations { get; set; } = null;
-
         public string ProjectileId { get; set; }
-        public string AttackAudioId { get; set; }
-        public string ChargeAudioId { get; set; }
         public HitboxConfig Hitbox { get; set; } = null;
     }
 }

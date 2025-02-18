@@ -12,15 +12,15 @@ namespace Eclipse.Engine.Utils.Load.Assets
 
     internal class SpriteAsset : Asset
     {
-
         private readonly List<Frame> _frames = new();
         internal IReadOnlyList<Frame> Frames => _frames;
-
         internal Texture2D Texture { get; private set; }
+        internal Vector2 Origin { get; private set; }
 
-        internal SpriteAsset(Texture2D texture, bool createDefaultFrame = false)
+        internal SpriteAsset(Texture2D texture, Vector2 origin, bool createDefaultFrame = false)
         {
             Texture = texture;
+            Origin = origin;
 
             // Create default frame (sttic sprites - 1 frame only)
             if (createDefaultFrame)
@@ -28,14 +28,12 @@ namespace Eclipse.Engine.Utils.Load.Assets
                 AddFrame(
                     index: 0,
                     sourceRectangle: new Rectangle(0, 0, texture.Width, texture.Height),
-                    origin: new Vector2(Texture.Width / 2, Texture.Height / 2),
                     isRotated: false
                 );
             }
         }
 
-        internal void AddFrame(int index,
-            Rectangle sourceRectangle, Vector2 origin, bool isRotated = false)
+        internal void AddFrame(int index, Rectangle sourceRectangle, bool isRotated = false)
         {
             // If index is bigger than current size of list
             // fill it with nulls (replaced with sprites later)
@@ -43,15 +41,12 @@ namespace Eclipse.Engine.Utils.Load.Assets
             {
                 _frames.Add(default);
             }
-            _frames[index] = new Frame(sourceRectangle, origin, isRotated);
+            _frames[index] = new Frame(sourceRectangle, isRotated);
         }
 
         internal void SetCustomOrigin(Vector2 origin)
         {
-            foreach (var frame in _frames)
-            {
-                frame.SetCustomOrigin(origin);
-            }
+            Origin = origin;
         }
 
         internal Vector2 GetSize()

@@ -65,7 +65,7 @@ namespace Eclipse.Engine.Managers
             // Base Animations
             var baseAnimator = new SpriteAnimator(sprite);
             var spriteAnimations = playerConfig.GetSpriteAnimations();
-            baseAnimator.SetAnimations(spriteAnimations);
+            baseAnimator.AddAnimations(spriteAnimations);
             player.AddComponent(baseAnimator);
 
             // Overlay animations
@@ -73,7 +73,7 @@ namespace Eclipse.Engine.Managers
             player.AddComponent(overlaySprite);
             var overlayAnimator = new OverlayAnimator(overlaySprite);
             var overlayAnimations = playerConfig.GetOverlayAnimations();
-            overlayAnimator.SetAnimations(overlayAnimations);
+            overlayAnimator.AddAnimations(overlayAnimations);
             player.AddComponent(overlayAnimator);
 
             player.SetAnimators(baseAnimator, overlayAnimator);

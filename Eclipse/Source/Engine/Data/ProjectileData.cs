@@ -12,10 +12,6 @@ namespace Eclipse.Engine.Data
         public float Mass { get; set; }
         public bool DestroyOnImpact { get; set; }
 
-        // Audio
-        public string FireAudioId { get; set; }     // Release audio
-        public string ImpactAudioId { get; set; }   // Impact/Hit audio
-
         public ProjectileData(string id, ProjectileConfig config)
         {
             Id = id;
@@ -25,8 +21,6 @@ namespace Eclipse.Engine.Data
             GravityScale = config.GravityScale;
             Mass = config.Mass;
             DestroyOnImpact = config.DestroyOnImpact;
-            FireAudioId = config.FireAudioId;
-            ImpactAudioId = config.ImpactAudioId;
         }
     }
 }

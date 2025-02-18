@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Eclipse.Components.Engine;
+using Eclipse.Engine.Physics.Collision;
 
 namespace Eclipse.Engine.Core
 {
     // Base interface for anything that can deal damage
     interface IDamageSource : ISystemComponent
     {
-        void OnDamageDealt(GameObject target);
+        void OnDamageDealt(GameObject target, Collision2D collision);
     }
 
     interface IMeleeDamageSource : IDamageSource

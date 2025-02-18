@@ -57,11 +57,11 @@ namespace Eclipse.Components.Combat
             //var y = _sprite.FlipY ? 3 * height / 4.0f : height / 4.0f;
             var y = height / 2.0f;
 
-            var center = _weaponSprite.Center;
+            //var center = _weaponSprite.Origin;
 
             var edgePoint = new Vector2(x, y);
             // Origin to edgePoint
-            var originToEdge = Vector2.Subtract(edgePoint, _weaponSprite.Center);
+            var originToEdge = Vector2.Subtract(edgePoint, _weaponSprite.Origin);
 
             // Convert to units (from pixels - sprite)
             var originToEdgeUnits = PPU.ToUnits(originToEdge);

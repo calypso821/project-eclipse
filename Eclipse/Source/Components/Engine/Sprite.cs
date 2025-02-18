@@ -6,18 +6,19 @@ using Eclipse.Engine.Utils.Load.Assets;
 using Eclipse.Components.Animation;
 using Eclipse.Engine.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Eclipse.Engine.Managers;
 
 namespace Eclipse.Components.Engine
 {
     internal class Frame
     {
         internal Rectangle SourceRectangle { get; }
-        internal Vector2 Origin { get; private set; }
+        //internal Vector2 Origin { get; private set; }
         internal bool IsRotated { get; }
         internal float Width => IsRotated ? SourceRectangle.Height : SourceRectangle.Width;
         internal float Height => IsRotated ? SourceRectangle.Width : SourceRectangle.Height;
 
-        internal Frame(Rectangle sourceRectangle, Vector2 origin, bool isRotated = false)
+        internal Frame(Rectangle sourceRectangle, bool isRotated = false)
         {
             SourceRectangle = isRotated ?
                 new Rectangle(
@@ -28,7 +29,7 @@ namespace Eclipse.Components.Engine
                 ) : sourceRectangle;
 
             //Origin = isRotated ? new Vector2(origin.Y, origin.X) : origin;
-            Origin = isRotated ? new Vector2(origin.Y, SourceRectangle.Height - origin.X) : origin;
+            //Origin = isRotated ? new Vector2(origin.Y, SourceRectangle.Height - origin.X) : origin;
             //TODO: Rotated custom origin
 
             //For a 90 - degree clockwise rotation, regardless of where the origin is:
@@ -41,11 +42,6 @@ namespace Eclipse.Components.Engine
             //If origin is at any custom point(x, y) -> becomes(Height - y, x)
 
             IsRotated = isRotated;
-        }
-
-        internal void SetCustomOrigin(Vector2 origin)
-        {
-            Origin = IsRotated ? new Vector2(origin.Y, SourceRectangle.Height - origin.X) : origin;
         }
     }
 
@@ -65,7 +61,14 @@ namespace Eclipse.Components.Engine
 
         // SpriteRenderr properties
         internal Rectangle SourceRectangle => _currentFrame.SourceRectangle;
-        internal Vector2 Origin => _currentFrame.Origin;
+
+        private Vector2 _origin;
+        internal Vector2 Origin
+        {
+            get => GetOrigin();
+            set => _origin = value;
+        }
+
         internal bool IsRotated => _currentFrame.IsRotated;
         private Frame _currentFrame => _frames[CurrentFrameIndex];
         internal Color Color { get; set; } = Color.White;
@@ -74,9 +77,6 @@ namespace Eclipse.Components.Engine
 
         // Size = Width, Height + applied IsRotated
         internal Vector2 Size => new Vector2(_currentFrame.Width, _currentFrame.Height);
-
-        // Center = Origin + applied IsRotated
-        internal Vector2 Center => GetCenter();
 
         // Additional render properties
         //internal virtual int ZOrder { get; set; }
@@ -102,6 +102,7 @@ namespace Eclipse.Components.Engine
             : base()
         {
             Texture = asset.Texture;
+            _origin = asset.Origin;
             _frames = asset.Frames.ToList();
         }
 
@@ -114,18 +115,19 @@ namespace Eclipse.Components.Engine
         // Method to update frames for new animation
         internal void SetAnimation(AnimationData animationData)
         {
-            Texture = animationData.Texture;
-            _frames = animationData.Frames;
-        }
-        private Vector2 GetCenter()
-        {
-            if (!_currentFrame.IsRotated)
-                return Origin;
+            var spriteAsset = AssetManager.Instance.GetSprite(animationData.SpriteId);
+            Texture = spriteAsset.Texture;
+            _frames = spriteAsset.Frames.ToList();
 
-            return new Vector2(
-                _currentFrame.SourceRectangle.Height - _currentFrame.Origin.Y,
-                _currentFrame.Origin.X
-            );
+            _origin = animationData.CustomOrigin ?? spriteAsset.Origin;
+        }
+
+        private Vector2 GetOrigin()
+        {
+            // Return origin based of current frame rotation
+            return _currentFrame.IsRotated ?
+                new Vector2(_origin.Y, _currentFrame.SourceRectangle.Height - _origin.X) :
+                _origin;
         }
 
         private SpriteEffects GetSpriteEffects()

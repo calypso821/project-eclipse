@@ -1,144 +1,124 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
+
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Eclipse.Components.Animation;
+using Eclipse.Components.Engine;
+using Eclipse.Engine.Utils.Load.Assets;
+using System;
 
 namespace Eclipse.Engine.Core
 {
-    public class VFXEmitter
+    internal class VFXData
     {
-        private AnimationData _animData;
-        private TweenData _tweenData;
-        private float _currentTime;
-        private float _frameTime;
-        private int _currentFrame;
-        private bool _isActive;
-        private bool _pingPongReverse;
-        private Color _color;
-
-        // Color transitions (since not part of TweenData)
-        private Color _startColor;
-        private Color _endColor;
-
-        public bool IsActive => _isActive;
-
-        public void Initialize(VFXData data, Vector2 spawnPosition)
-        {
-            _animData = data.AnimationData;
-            _tweenData = data.TweenData;
-
-            // For effects that need offset from spawn position
-            _tweenData = new TweenData(
-                startPosition: spawnPosition + _tweenData.StartPosition,
-                endPosition: spawnPosition + _tweenData.EndPosition,
-                startRotation: _tweenData.StartRotation,
-                endRotation: _tweenData.EndRotation,
-                startScale: _tweenData.StartScale,
-                endScale: _tweenData.EndScale,
-                duration: _tweenData.Duration,
-                pingPing: _tweenData.PingPong,
-                isLooping: _tweenData.IsLooping
-            );
-
-            _startColor = data.StartColor;
-            _endColor = data.EndColor;
-
-            _currentTime = 0;
-            _frameTime = 0;
-            _currentFrame = 0;
-            _pingPongReverse = false;
-            _isActive = true;
-        }
-
-        public void Update(float deltaTime)
-        {
-            if (!_isActive) return;
-
-            _currentTime += deltaTime;
-
-            // Handle frame animation
-            _frameTime += deltaTime;
-            while (_frameTime >= _animData.FrameDuration)
-            {
-                _frameTime -= _animData.FrameDuration;
-                _currentFrame++;
-
-                if (_currentFrame >= _animData.FrameCount)
-                {
-                    if (_animData.IsLooping)
-                    {
-                        _currentFrame = 0;
-                    }
-                    else
-                    {
-                        _isActive = false;
-                        return;
-                    }
-                }
-            }
-
-            // Handle transformations using TweenData
-            float progress = _currentTime / _tweenData.Duration;
-
-            if (_currentTime >= _tweenData.Duration)
-            {
-                if (_tweenData.PingPong)
-                {
-                    _currentTime = 0;
-                    _pingPongReverse = !_pingPongReverse;
-                }
-                else if (_tweenData.IsLooping)
-                {
-                    _currentTime = 0;
-                }
-                else
-                {
-                    _isActive = false;
-                    return;
-                }
-            }
-
-            // Adjust progress for ping-pong
-            if (_pingPongReverse)
-            {
-                progress = 1 - progress;
-            }
-
-            _color = Color.Lerp(_startColor, _endColor, progress);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            if (!_isActive) return;
-
-            var frame = _animData.Frames[_currentFrame];
-            var position = Vector2.Lerp(_tweenData.StartPosition, _tweenData.EndPosition, _currentTime / _tweenData.Duration);
-            var rotation = MathHelper.Lerp(_tweenData.StartRotation, _tweenData.EndRotation, _currentTime / _tweenData.Duration);
-            var scale = Vector2.Lerp(_tweenData.StartScale, _tweenData.EndScale, _currentTime / _tweenData.Duration);
-
-            spriteBatch.Draw(
-                _animData.Texture,
-                position,
-                frame.SourceRectangle,
-                _color,
-                rotation,
-                frame.Origin,
-                scale,
-                SpriteEffects.None,
-                0f
-            );
-        }
+        internal float Scale { get; set; } = 1f;
+        internal Color Color { get; set; } = Color.White;
+        internal Vector2 SpawnPosition { get; set; }
+        internal Vector2 Direction { get; set; }
     }
 
-    public class VFXData
+    internal class VFXEmitter
     {
-        public AnimationData AnimationData { get; set; }
-        public TweenData TweenData { get; set; }
-        public Color StartColor { get; set; }
-        public Color EndColor { get; set; }
+        internal string EffectId { get; private set; }
+        internal VFXData VFXData { get; private set; }
+        internal VFXSource VFXSource { get; private set; }
+        internal AnimationData AnimationData { get; private set; }
+        internal Vector2 CurrentPosition { get; set; }
+
+        // For drawing
+        private Sprite _sprite = new(); // empty sprite
+        internal Sprite Sprite => _sprite;
+
+        private float _currentFrameTime;
+        private int _currentFrameIndex;
+
+        private bool _isPlaying = false;
+        internal bool IsPlaying => _isPlaying;
+
+        private bool _flipX = false;
+        internal SpriteEffects SpriteEffects =>
+            _flipX ?
+            SpriteEffects.FlipHorizontally :
+            SpriteEffects.None;
+
+
+        internal void Configure(
+            string effectId,
+            VFXSource source,
+            VFXData vfxData,
+            AnimationData animationData)
+        {
+            EffectId = effectId;
+            VFXSource = source;
+            VFXData = vfxData;
+            AnimationData = animationData;
+
+            // Store initial spawn position, direction
+            CurrentPosition = VFXData.SpawnPosition;
+            // TODO: Normal == direction?? 
+            _flipX = VFXData.Direction.X < 0;
+          
+            // Set sprite
+            _sprite.SetAnimation(animationData);
+            // Update position if non static
+            UpdatePosition();
+        }
+
+        internal void Update(GameTime gameTime)
+        {
+            if (!_isPlaying) return;
+
+            UpdateAnimation(gameTime);
+            UpdatePosition();
+        }
+
+        private void UpdateAnimation(GameTime gameTime)
+        {
+            if (AnimationData.FrameCount == 1) return; // Update not needed (static sprite)
+            
+            _currentFrameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (_currentFrameTime >= AnimationData.FrameDuration)
+            {
+                _currentFrameTime = 0;
+                _currentFrameIndex = (_currentFrameIndex + 1) % AnimationData.FrameCount;
+
+                if (!AnimationData.IsLooping && _currentFrameIndex == 0)
+                {
+                    // No loop - only 1 itteration
+                    _isPlaying = false;
+                    _currentFrameIndex = AnimationData.FrameCount - 1;
+                }
+
+                UpdateFrame();
+            }
+        }
+        private void UpdateFrame()
+        {
+            _sprite.CurrentFrameIndex = _currentFrameIndex;
+        }
+
+        internal void UpdatePosition()
+        {
+            if (VFXSource.IsStatic) return;
+
+            // Update source position (if not static)
+            CurrentPosition = VFXSource.GameObject.Transform.WorldPosition;
+        }
+
+        internal void Play()
+        {
+            _currentFrameIndex = 0;
+            _currentFrameTime = 0;
+            _isPlaying = true;
+        }
+
+        internal void Stop()
+        {
+            _currentFrameIndex = 0;
+            _currentFrameTime = 0;
+            _isPlaying = false;
+        }
     }
 }
